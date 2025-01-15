@@ -1,0 +1,24 @@
+#
+# Makefile for 1/5 C binaries: optimization: 3
+#
+
+
+CC = gcc
+CFLAGS = -Wall -Wextra -O3
+
+SRCS = src/main.c src/naive.c src/less_naive.c
+HDRS = src/primes.h
+
+OBJS = $(SRCS:.c=.o)
+TARGET = build/opt3/main
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+    $(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+
+%.o: %.c $(HDRS)
+    $(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+    rm -f $(OBJS) $(TARGET)
+
