@@ -12,6 +12,28 @@ So I was curious to see just how much faster that algorithm was than a brute for
 Then I did really nothing with it for a long time - reason being from a *very cursory* glance it seemed like getting pin setup would not be possible with my bizarre schedule. Here's to changing that, and ...self-edification!
 
 
+### Running it yourself
+The way I've scaffolded this, we have a controller makefile at the root proj. dir, which invokes the makefile or set of makefiles that you specifiy.
+For instance:
+  - to build the C binaries only, from the root proj dir., you can run `make Conly`
+  - to build the C++ pin-tool binary, from the root proj dir., you can run `make Cpponly`
+  - to throw caution to the wind (not really lol) and build it all, run `make all`
+  - to clean up artifacts and build outputs: good ol `make clean`
+
+You can also make a specific binary by providing its label
+  - e.g., to build the C binary to instrument with *lowest compiler optimization levels*, just run `make opt0` 
+
+If you tinker with a makefile and something breaks, just delete all the Makefile.opt* files (not the pin makefile), and rerun my lil script (from its containing dir please).
+
+If you don't have permissions to exec that script, give yourself permission w/ `chmod +x populate-makefiles.sh`, and then run it.
+
+If I haven't broken anything you'll have 5 new makefiles properly configured and pathed for each compiler optimization level.
+
+All binaries are built to ...`build/`.
+To actually run one of the (C) binaries, from proj dir: `./build/opt[0|1|2|3|fast]/main` 
+
+Again note, this will not actually instrument the binaries. That's what the pin-tool is for, and until I write the actual pin-tool binary that's all you can really do here for now
+
 #### long term goals for this
 - use this as an excuse to learn basics of more low-level languages, then instrument those binaries
 
