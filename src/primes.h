@@ -4,9 +4,8 @@
 #include <stdbool.h>
 
 typedef struct {
-  bool actual;
-  bool expected; 
   unsigned int n;
+  bool expected; 
 } case_t;
 
 
