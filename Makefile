@@ -18,28 +18,28 @@ Conly: opt0 opt1 opt2 opt3 optfast
 Cpponly: pin_tool
 
 opt0:
-    $(MAKE) -f makefiles/Makefile.opt0
+	$(MAKE) -f makefiles/Makefile.opt0
 
 opt1:
-    $(MAKE) -f makefiles/Makefile.opt1
+	$(MAKE) -f makefiles/Makefile.opt1
 
 opt2:
-    $(MAKE) -f makefiles/Makefile.opt2
+	$(MAKE) -f makefiles/Makefile.opt2
 
 opt3:
-    $(MAKE) -f makefiles/Makefile.opt3
+	$(MAKE) -f makefiles/Makefile.opt3
 
 optfast:
-    $(MAKE) -f makefiles/Makefile.optfast
+	$(MAKE) -f makefiles/Makefile.optfast
 
 pin_tool:
-    $(MAKE) -f makefiles/Makefile.pin
+	$(MAKE) -f makefiles/Makefile.pin
 
 clean:
-    $(MAKE) -f makefiles/Makefile.opt0 clean
-    $(MAKE) -f makefiles/Makefile.opt1 clean
-    $(MAKE) -f makefiles/Makefile.opt2 clean
-    $(MAKE) -f makefiles/Makefile.opt3 clean
-    $(MAKE) -f makefiles/Makefile.optfast clean
-    $(MAKE) -f makefiles/Makefile.pin clean
+	$(MAKE) -f makefiles/Makefile.opt0 clean
+	$(MAKE) -f makefiles/Makefile.opt1 clean
+	$(MAKE) -f makefiles/Makefile.opt2 clean
+	$(MAKE) -f makefiles/Makefile.opt3 clean
+	$(MAKE) -f makefiles/Makefile.optfast clean
+	$(MAKE) -f makefiles/Makefile.pin clean
 

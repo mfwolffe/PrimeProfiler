@@ -25,10 +25,10 @@ CXX = g++
 CXXFLAGS = -O3 -fomit-frame-pointer -fno-strict-aliasing -fno-rtti -fno-exceptions -Wall $(PIN_INCLUDE)
 
 $(OBJDIR)/$(PINTOOL).so: $(SRC)
-    mkdir -p $(OBJDIR)
-    $(CXX) $(CXXFLAGS) -shared -o $@ $< $(PIN_LIB)
+  mkdir -p $(OBJDIR)
+  $(CXX) $(CXXFLAGS) -shared -o $@ $< $(PIN_LIB)
 
 clean:
-    rm -rf $(OBJDIR)
+  rm -rf $(OBJDIR)
 
 .PHONY: clean
