@@ -10,7 +10,7 @@ typedef struct {
 } case_t;
 
 
-void test_candidates(case_t *cndts, int n_cndts, const char* algo_str, bool (*fn_to_test)(unsigned int));
+void test_cndts(case_t *cndts, int n_cndts, const char* algo_str, bool (*prime_fn)(unsigned int));
 
 /* algorithms to instrument */
 
