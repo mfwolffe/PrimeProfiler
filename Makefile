@@ -11,9 +11,11 @@
 #
 #
 
-.PHONY: all clean opt0 opt1 opt2 opt3 optfast
+.PHONY: all clean opt0 opt1 opt2 opt3 optfast pin_tool
 
-all: opt0 opt1 opt2 opt3 optfast
+all: opt0 opt1 opt2 opt3 optfast pin_tool
+Conly: opt0 opt1 opt2 opt3 optfast
+Cpponly: pin_tool
 
 opt0:
     $(MAKE) -f makefiles/Makefile.opt0
@@ -29,6 +31,9 @@ opt3:
 
 optfast:
     $(MAKE) -f makefiles/Makefile.optfast
+
+pin_tool:
+    $(MAKE) -f makefiles/Makefile.pin
 
 clean:
     $(MAKE) -f makefiles/Makefile.opt0 clean
