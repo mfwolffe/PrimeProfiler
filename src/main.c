@@ -6,7 +6,7 @@
 //                also this will crash  as is right now lol
 //
 void test_cndts(case_t *cndts, int n_cndts, const char* algo_str, bool (*prime_fn)(unsigned int)) {
-    printf("Testing %s:\n", algo_str);
+    printf("\nTesting %s:\n", algo_str);
     for (int i = 0; i < n_cndts; i++) {
         bool result = prime_fn(cndts[i].n);
         printf("%s(%u) = %s (expected %s)\n", algo_str, cndts[i].n, result ? "true" : "false", cndts[i].expected ? "true" : "false");
