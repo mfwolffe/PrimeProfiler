@@ -1,8 +1,7 @@
 #include "primes.h"
 
 
-bool naive_prime(unsigned int n)
-{
+bool naive_prime(unsigned int n) {
   if (n <= 1)
     return false;
 
@@ -14,8 +13,7 @@ bool naive_prime(unsigned int n)
 }
 
 
-bool naive_prime_squares (unsigned int n) 
-{
+bool naive_prime_squares(unsigned int n) {
   if (n <= 1)
     return false;
 
@@ -25,3 +23,4 @@ bool naive_prime_squares (unsigned int n)
 
   return true;
 }
+

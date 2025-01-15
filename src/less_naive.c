@@ -1,7 +1,6 @@
 #include "primes.h"
 
-bool less_naive_prime(unsigned int n)
-{
+bool less_naive_prime(unsigned int n) {
   // the numbers 1,0 are not prime; no 'negative primes'
   if (n <= 1)
     return false;
@@ -28,3 +27,4 @@ bool less_naive_prime(unsigned int n)
   // otherwise prime
   return true;
 }
+
