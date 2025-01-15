@@ -2,12 +2,15 @@
 #include "primes.h"
 
 
-// TODO @mfwolffe update me w/ expected/actual
+// DONE @mfwolffe update me w/ expected/actual
 //                also this will crash  as is right now lol
-void test_candidates(unsigned int candidates[], int num_candidates, const char* algo_name, bool (*function_to_test)(unsigned int)) {
-    printf("Testing %s:\n", algo_name);
-    for (int i = 0; i < num_candidates; i++)
-        printf("%s(%u) = %s\n", algo_name, candidates[i], function_to_test(candidates[i]) ? "true" : "false");
+//
+void test_cndts(case_t *cndts, int n_cndts, const char* algo_str, bool (*prime_fn)(unsigned int)) {
+    printf("Testing %s:\n", algo_str);
+    for (int i = 0; i < n_cndts; i++) {
+        bool result = prime_fn(cndts[i].n);
+        printf("%s(%u) = %s (expected %s)\n", algo_str, cndts[i].n, result ? "true" : "false", cndts[i].expected ? "true" : "false");
+    }
 }
 
 
@@ -20,17 +23,17 @@ int main() {
     size_t n_med_cnd = sizeof(med_cnd) / sizeof(med_cnd[0]);
     size_t n_lrg_cnd = sizeof(lrg_cnd) / sizeof(lrg_cnd[0]);
 
-    test_candidates(sml_cnd, n_sml_cnd, "naive_prime",          naive_prime);
-    test_candidates(sml_cnd, n_sml_cnd, "less_naive_prime",     less_naive_prime);
-    test_candidates(sml_cnd, n_sml_cnd, "naive_prime_squares",  naive_prime_squares);
+    test_cndts(sml_cnd, n_sml_cnd, "naive_prime",          naive_prime);
+    test_cndts(sml_cnd, n_sml_cnd, "less_naive_prime",     less_naive_prime);
+    test_cndts(sml_cnd, n_sml_cnd, "naive_prime_squares",  naive_prime_squares);
 
-    test_candidates(med_cnd, n_med_cnd, "naive_prime",          naive_prime);
-    test_candidates(med_cnd, n_med_cnd, "less_naive_prime",     less_naive_prime);
-    test_candidates(med_cnd, n_med_cnd, "naive_prime_squares",  naive_prime_squares);
+    test_cndts(med_cnd, n_med_cnd, "naive_prime",          naive_prime);
+    test_cndts(med_cnd, n_med_cnd, "less_naive_prime",     less_naive_prime);
+    test_cndts(med_cnd, n_med_cnd, "naive_prime_squares",  naive_prime_squares);
 
-    test_candidates(lrg_cnd, n_lrg_cnd, "naive_prime",          naive_prime);
-    test_candidates(lrg_cnd, n_lrg_cnd, "less_naive_prime",     less_naive_prime);
-    test_candidates(lrg_cnd, n_lrg_cnd, "naive_prime_squares",  naive_prime_squares);
+    test_cndts(lrg_cnd, n_lrg_cnd, "naive_prime",          naive_prime);
+    test_cndts(lrg_cnd, n_lrg_cnd, "less_naive_prime",     less_naive_prime);
+    test_cndts(lrg_cnd, n_lrg_cnd, "naive_prime_squares",  naive_prime_squares);
 
     return 0;
 }
