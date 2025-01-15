@@ -17,7 +17,7 @@ void test_cndts(case_t *cndts, int n_cndts, const char* algo_str, bool (*prime_f
 int main() {
     case_t sml_cnd[] = { {2, true}, {3, true}, {11, true}, {47, true}, {97, true}, {149, true}, {25, false}, {93, false}, {110, false} };
     case_t med_cnd[] = { {257, true}, {499, true}, {1009, true}, {2003, true}, {2341, true}, {3001, true}, {3500, false}, {3751, false}, {3999, false} };
-    case_t lrg_cnd[] = { {5003, true}, {10007, true}, {150113, true}, {20021, true}, {25013, true}, {30029, true}, {68937, false}, {15625, false}, {35019, false} };
+    case_t lrg_cnd[] = { {5003, true}, {10007, true}, {1500113, true}, {20021, true}, {25013, true}, {30029, true}, {68937, false}, {15625, false}, {35019, false} };
 
     size_t n_sml_cnd = sizeof(sml_cnd) / sizeof(sml_cnd[0]);
     size_t n_med_cnd = sizeof(med_cnd) / sizeof(med_cnd[0]);
