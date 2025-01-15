@@ -13,7 +13,7 @@ Then I did really nothing with it for a long time - reason being from a *very cu
 
 
 #### long term goals for this
-- use this as an excuse to learn basics of low-level languages, then instrument those binaries
+- use this as an excuse to learn basics of more low-level languages, then instrument those binaries
 
 <hr>
 
