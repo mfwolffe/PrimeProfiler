@@ -1,11 +1,10 @@
 #include "primes.h"
 
-
 bool naive_prime(unsigned int n) {
   if (n <= 1)
     return false;
 
-  for (unsigned int i = 2; i <= n; i++)
+  for (unsigned int i = 2; i < n; i++)
     if (n % i == 0)
       return false;
 
@@ -23,4 +22,5 @@ bool naive_prime_squares(unsigned int n) {
 
   return true;
 }
+
 
