@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <x86intrin.h>
+#include <cstdlib>
 
 /* Global Variables */
 std::ofstream TraceFile;
@@ -33,7 +34,7 @@ ADDRINT naive_prime_squares_start = 0, naive_prime_squares_end = 0;
 
 /* Commandline Switches */
 KNOB<std::string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool",
-    "o", "comprehensive_profile.out", "specify trace file name");
+    "o", "dynamic_profile.out", "specify trace file name");
 
 // Get function name from address
 std::string get_function_name(ADDRINT addr) {
@@ -99,6 +100,8 @@ VOID count_branch(ADDRINT addr) {
 
 // Instruction instrumentation
 VOID instruction_instrumentation(INS ins, VOID *v) {
+    ADDRINT addr = INS_Address(ins);
+    
     // Insert instruction counter for every instruction
     INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)count_instruction,
                    IARG_INST_PTR, IARG_END);
@@ -121,9 +124,6 @@ VOID instruction_instrumentation(INS ins, VOID *v) {
     }
     
     // Track function entries and exits at specific addresses
-    ADDRINT addr = INS_Address(ins);
-    
-    // Function entries
     if (addr == naive_prime_start || addr == less_naive_prime_start || addr == naive_prime_squares_start) {
         INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)function_entry,
                        IARG_INST_PTR, IARG_END);
@@ -139,87 +139,56 @@ VOID instruction_instrumentation(INS ins, VOID *v) {
     }
 }
 
+// Get addresses from environment variables (set by the wrapper script)
+VOID get_addresses_from_env() {
+    const char* naive_addr = getenv("NAIVE_PRIME_ADDR");
+    const char* naive_size = getenv("NAIVE_PRIME_SIZE");
+    const char* naive_sq_addr = getenv("NAIVE_PRIME_SQUARES_ADDR");
+    const char* naive_sq_size = getenv("NAIVE_PRIME_SQUARES_SIZE");
+    const char* less_naive_addr = getenv("LESS_NAIVE_PRIME_ADDR");
+    const char* less_naive_size = getenv("LESS_NAIVE_PRIME_SIZE");
+    
+    if (naive_addr && naive_size) {
+        naive_prime_start = strtoul(naive_addr, NULL, 16);
+        naive_prime_end = naive_prime_start + strtoul(naive_size, NULL, 16);
+        TraceFile << "ENV: naive_prime at 0x" << std::hex << naive_prime_start 
+                  << " - 0x" << naive_prime_end << " (size: 0x" << (naive_prime_end - naive_prime_start) 
+                  << ")" << std::dec << std::endl;
+    }
+    
+    if (naive_sq_addr && naive_sq_size) {
+        naive_prime_squares_start = strtoul(naive_sq_addr, NULL, 16);
+        naive_prime_squares_end = naive_prime_squares_start + strtoul(naive_sq_size, NULL, 16);
+        TraceFile << "ENV: naive_prime_squares at 0x" << std::hex << naive_prime_squares_start 
+                  << " - 0x" << naive_prime_squares_end << " (size: 0x" << (naive_prime_squares_end - naive_prime_squares_start) 
+                  << ")" << std::dec << std::endl;
+    }
+    
+    if (less_naive_addr && less_naive_size) {
+        less_naive_prime_start = strtoul(less_naive_addr, NULL, 16);
+        less_naive_prime_end = less_naive_prime_start + strtoul(less_naive_size, NULL, 16);
+        TraceFile << "ENV: less_naive_prime at 0x" << std::hex << less_naive_prime_start 
+                  << " - 0x" << less_naive_prime_end << " (size: 0x" << (less_naive_prime_end - less_naive_prime_start) 
+                  << ")" << std::dec << std::endl;
+    }
+    
+    TraceFile << "Address ranges configured with exact sizes!" << std::endl;
+}
+
 // Image load callback
 VOID image_load(IMG img, VOID *v) {
     if (IMG_IsMainExecutable(img)) {
         TraceFile << "Main executable: " << IMG_Name(img) << std::endl;
         
-        // Try to find functions via symbols first, then via RTN_FindByName as backup
-        int functions_found = 0;
-        
-        // Method 1: Iterate through sections and routines
-        for (SEC sec = IMG_SecHead(img); SEC_Valid(sec); sec = SEC_Next(sec)) {
-            for (RTN rtn = SEC_RtnHead(sec); RTN_Valid(rtn); rtn = RTN_Next(rtn)) {
-                std::string name = RTN_Name(rtn);
-                ADDRINT start = RTN_Address(rtn);
-                ADDRINT size = RTN_Size(rtn);
-                
-                if (name == "naive_prime") {
-                    naive_prime_start = start;
-                    naive_prime_end = start + size;
-                    functions_found++;
-                    TraceFile << "Found naive_prime via iteration: 0x" << std::hex << start 
-                              << " - 0x" << (start + size) << " (size: " << std::dec << size << ")" << std::endl;
-                } else if (name == "less_naive_prime") {
-                    less_naive_prime_start = start;
-                    less_naive_prime_end = start + size;
-                    functions_found++;
-                    TraceFile << "Found less_naive_prime via iteration: 0x" << std::hex << start 
-                              << " - 0x" << (start + size) << " (size: " << std::dec << size << ")" << std::endl;
-                } else if (name == "naive_prime_squares") {
-                    naive_prime_squares_start = start;
-                    naive_prime_squares_end = start + size;
-                    functions_found++;
-                    TraceFile << "Found naive_prime_squares via iteration: 0x" << std::hex << start 
-                              << " - 0x" << (start + size) << " (size: " << std::dec << size << ")" << std::endl;
-                }
-            }
-        }
-        
-        // Method 2: Use RTN_FindByName as backup for any missing functions
-        const char* target_names[] = {"naive_prime", "less_naive_prime", "naive_prime_squares"};
-        ADDRINT* starts[] = {&naive_prime_start, &less_naive_prime_start, &naive_prime_squares_start};
-        ADDRINT* ends[] = {&naive_prime_end, &less_naive_prime_end, &naive_prime_squares_end};
-        
-        for (int i = 0; i < 3; i++) {
-            if (*starts[i] == 0) {  // Function not found yet
-                RTN rtn = RTN_FindByName(img, target_names[i]);
-                if (RTN_Valid(rtn)) {
-                    *starts[i] = RTN_Address(rtn);
-                    *ends[i] = *starts[i] + RTN_Size(rtn);
-                    functions_found++;
-                    TraceFile << "Found " << target_names[i] << " via RTN_FindByName: 0x" << std::hex 
-                              << *starts[i] << " - 0x" << *ends[i] << " (size: " << std::dec 
-                              << RTN_Size(rtn) << ")" << std::endl;
-                } else {
-                    TraceFile << "*** FAILED to find " << target_names[i] << " ***" << std::endl;
-                }
-            }
-        }
-        
-        TraceFile << "Total functions found: " << functions_found << "/3" << std::endl;
-        
-        // Only use hardcoded fallback if absolutely no functions found
-        if (functions_found == 0) {
-            TraceFile << "*** WARNING: No functions found via symbols! Using hardcoded fallback ***" << std::endl;
-            naive_prime_start = 0x4014b8;
-            naive_prime_end = 0x401500;
-            less_naive_prime_start = 0x40154b;
-            less_naive_prime_end = 0x4015fc;
-            naive_prime_squares_start = 0x401500;
-            naive_prime_squares_end = 0x40154b;
-            
-            TraceFile << "Fallback - naive_prime: 0x" << std::hex << naive_prime_start << " - 0x" << naive_prime_end << std::dec << std::endl;
-            TraceFile << "Fallback - less_naive_prime: 0x" << std::hex << less_naive_prime_start << " - 0x" << less_naive_prime_end << std::dec << std::endl;
-            TraceFile << "Fallback - naive_prime_squares: 0x" << std::hex << naive_prime_squares_start << " - 0x" << naive_prime_squares_end << std::dec << std::endl;
-        }
+        // Get addresses from environment variables
+        get_addresses_from_env();
         
         // Initialize metrics for each function
         metrics["naive_prime"] = FunctionMetrics();
         metrics["less_naive_prime"] = FunctionMetrics();
         metrics["naive_prime_squares"] = FunctionMetrics();
         
-        TraceFile << "Function address ranges configured successfully!" << std::endl;
+        TraceFile << "Dynamic address configuration completed!" << std::endl;
     }
 }
 
@@ -273,7 +242,7 @@ VOID Fini(INT32 code, VOID *v) {
 }
 
 INT32 Usage() {
-    PIN_ERROR("Comprehensive prime function profiler\n" 
+    PIN_ERROR("Dynamic prime function profiler\n" 
               + KNOB_BASE::StringKnobSummary() + "\n");
     return -1;
 }
@@ -282,8 +251,8 @@ int main(int argc, char * argv[]) {
     if (PIN_Init(argc, argv)) return Usage();
 
     TraceFile.open(KnobOutputFile.Value().c_str());
-    TraceFile << "Comprehensive Prime Algorithm Profiler" << std::endl;
-    TraceFile << "=====================================" << std::endl;
+    TraceFile << "Dynamic Prime Algorithm Profiler" << std::endl;
+    TraceFile << "=================================" << std::endl;
 
     IMG_AddInstrumentFunction(image_load, 0);
     INS_AddInstrumentFunction(instruction_instrumentation, 0);
