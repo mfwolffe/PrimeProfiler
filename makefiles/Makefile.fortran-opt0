@@ -1,0 +1,31 @@
+#
+# Fortran Makefile for PrimeProfiler - No Optimization (-O0)
+# Matt Wolffe, James Madison University, 2025
+#
+
+FC = gfortran
+FFLAGS = -Wall -Wextra -O0 -g -std=f2008
+SRCDIR = fortran
+OBJDIR = build/fortran-opt0
+TARGET = $(OBJDIR)/main
+
+# Source files
+SOURCES = $(SRCDIR)/naive_prime.f90 $(SRCDIR)/naive_prime_squares.f90 $(SRCDIR)/less_naive_prime.f90 $(SRCDIR)/main.f90
+OBJECTS = $(OBJDIR)/naive_prime.o $(OBJDIR)/naive_prime_squares.o $(OBJDIR)/less_naive_prime.o $(OBJDIR)/main.o
+
+.PHONY: all clean
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS) | $(OBJDIR)
+	$(FC) $(FFLAGS) -o $@ $(OBJECTS)
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.f90 | $(OBJDIR)
+	$(FC) $(FFLAGS) -c $< -o $@
+
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+
+clean:
+	rm -f $(OBJECTS) $(TARGET)
+	rmdir $(OBJDIR) 2>/dev/null || true
