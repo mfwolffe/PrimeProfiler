@@ -1,0 +1,21 @@
+CC = cargo
+TARGET = main
+BUILD_DIR = build/rust-release
+RUST_DIR = rust
+
+.PHONY: all clean
+
+all: $(BUILD_DIR)/$(TARGET)
+
+$(BUILD_DIR)/$(TARGET): $(RUST_DIR)/src/main.rs $(RUST_DIR)/src/lib.rs $(RUST_DIR)/Cargo.toml
+	@echo "Building Rust (release profile)..."
+	@mkdir -p $(BUILD_DIR)
+	cd $(RUST_DIR) && source ~/.cargo/env && cargo build --release
+	@cp $(RUST_DIR)/target/release/$(TARGET) $(BUILD_DIR)/$(TARGET)
+	@echo "✓ Rust release build complete: $(BUILD_DIR)/$(TARGET)"
+
+clean:
+	@echo "Cleaning Rust release build..."
+	@rm -rf $(BUILD_DIR)
+	@cd $(RUST_DIR) && cargo clean
+	@echo "✓ Rust release clean complete"
