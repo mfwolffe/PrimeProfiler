@@ -1,0 +1,18 @@
+Dynamic Prime Algorithm Profiler
+=================================
+Main executable: /home/espadon/src/PrimeProfiler/build/opt0/main
+Address ranges configured with exact sizes!
+Dynamic address configuration completed!
+
+========== COMPREHENSIVE PROFILING RESULTS ==========
+Function            Calls     Instructions   Mem Reads   Mem Writes  Branches  Total Cycles   Avg Cyc/Call   
+-------------------------------------------------------------------------------------------------------------------
+less_naive_prime    0         0              0           0           0         0              0              
+naive_prime         0         0              0           0           0         0              0              
+naive_prime_squares 0         0              0           0           0         0              0              
+
+========== CSV DATA ==========
+function,calls,instructions,mem_reads,mem_writes,branches,total_cycles,avg_cycles_per_call
+less_naive_prime,0,0,0,0,0,0,0
+naive_prime,0,0,0,0,0,0,0
+naive_prime_squares,0,0,0,0,0,0,0
