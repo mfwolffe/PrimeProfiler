@@ -11,11 +11,11 @@
 #
 #
 
-.PHONY: all clean opt0 opt1 opt2 opt3 optfast pin_tool
+.PHONY: all clean opt0 opt1 opt2 opt3 optfast pin_tools
 
-all: opt0 opt1 opt2 opt3 optfast pin_tool
+all: opt0 opt1 opt2 opt3 optfast pin_tools
 Conly: opt0 opt1 opt2 opt3 optfast
-Cpponly: pin_tool
+pintools: pin_tools
 
 opt0:
 	$(MAKE) -f makefiles/Makefile.opt0
@@ -32,8 +32,8 @@ opt3:
 optfast:
 	$(MAKE) -f makefiles/Makefile.optfast
 
-pin_tool:
-	$(MAKE) -f makefiles/Makefile.pin
+pin_tools:
+	cd pin-tools && $(MAKE) PIN_ROOT=/home/espadon/pin
 
 clean:
 	$(MAKE) -f makefiles/Makefile.opt0 clean
@@ -41,5 +41,5 @@ clean:
 	$(MAKE) -f makefiles/Makefile.opt2 clean
 	$(MAKE) -f makefiles/Makefile.opt3 clean
 	$(MAKE) -f makefiles/Makefile.optfast clean
-	$(MAKE) -f makefiles/Makefile.pin clean
+	cd pin-tools && $(MAKE) PIN_ROOT=/home/espadon/pin clean
 
