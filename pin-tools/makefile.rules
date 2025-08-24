@@ -19,7 +19,7 @@
 ###### Place all generic definitions here ######
 
 # This defines tests which run tools of the same name.
-TEST_TOOL_ROOTS := prime-profiler prime-comprehensive prime-simple
+TEST_TOOL_ROOTS := prime-profiler prime-comprehensive prime-simple prime-profiler-fortran
 
 # This defines the tests to be run that were not already defined in TEST_TOOL_ROOTS.
 TEST_ROOTS :=
@@ -71,4 +71,7 @@ $(OBJDIR)prime-comprehensive$(PINTOOL_SUFFIX): $(OBJDIR)prime-comprehensive$(OBJ
 	$(LINKER) $(TOOL_LDFLAGS) $(LINK_EXE)$@ $^ $(TOOL_LPATHS) $(TOOL_LIBS)
 
 $(OBJDIR)prime-simple$(PINTOOL_SUFFIX): $(OBJDIR)prime-simple$(OBJ_SUFFIX)
+	$(LINKER) $(TOOL_LDFLAGS) $(LINK_EXE)$@ $^ $(TOOL_LPATHS) $(TOOL_LIBS)
+
+$(OBJDIR)prime-profiler-fortran$(PINTOOL_SUFFIX): $(OBJDIR)prime-profiler-fortran$(OBJ_SUFFIX)
 	$(LINKER) $(TOOL_LDFLAGS) $(LINK_EXE)$@ $^ $(TOOL_LPATHS) $(TOOL_LIBS)
