@@ -3,14 +3,14 @@
 # Matt Wolffe, James Madison University, 2025*
 #
 
-PINTOOL = prime-ultra-minimal
-PIN_ROOT = /opt/pin-direct
+PINTOOL = prime-instrumentation
+PIN_ROOT = /home/espadon/pin
 TARGET = intel64
 SRC = ../pin-tools/$(PINTOOL).cpp
 OBJDIR = ../build/pin
 
 # Simplified Pin compilation
-CXX = g++-12
+CXX = g++
 CXXFLAGS = -D__PIN__=1 -DPIN_CRT=1 -fno-strict-aliasing -fno-stack-protector -fno-exceptions
 CXXFLAGS += -funwind-tables -fasynchronous-unwind-tables -fno-rtti -DTARGET_IA32E -DHOST_IA32E
 CXXFLAGS += -fPIC -DTARGET_LINUX -O3 -fomit-frame-pointer -Wall -Wno-unknown-pragmas

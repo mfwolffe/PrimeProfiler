@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <iomanip>
+#include <x86intrin.h>
 
 /* ===================================================================== */
 /* Names of malloc and free */
@@ -125,27 +126,56 @@ VOID count_memory_write() {
 
 // Instrument function calls
 VOID function_instrumentation(IMG img, VOID *v) {
-    // Instrument each routine in the image
-    for (SEC sec = IMG_SecHead(img); SEC_Valid(sec); sec = SEC_Next(sec)) {
-        for (RTN rtn = SEC_RtnHead(sec); RTN_Valid(rtn); rtn = RTN_Next(rtn)) {
-            std::string func_name = RTN_Name(rtn);
-            
-            if (is_target_function(func_name)) {
-                TraceFile << "Instrumenting function: " << func_name << std::endl;
+    TraceFile << "Loading image: " << IMG_Name(img) << std::endl;
+    
+    // Check if this is the main executable
+    if (IMG_IsMainExecutable(img)) {
+        TraceFile << "*** This is the main executable ***" << std::endl;
+        
+        // Try to find each target function by name directly
+        for (const auto& target : target_functions) {
+            RTN rtn = RTN_FindByName(img, target.c_str());
+            if (RTN_Valid(rtn)) {
+                TraceFile << "*** Found and instrumenting function: " << target << " ***" << std::endl;
                 
                 RTN_Open(rtn);
                 
                 // Insert call to function_entry at function entry point
                 RTN_InsertCall(rtn, IPOINT_BEFORE, (AFUNPTR)function_entry,
-                              IARG_PTR, new std::string(func_name), IARG_END);
+                              IARG_PTR, new std::string(target), IARG_END);
                 
                 // Insert call to function_exit at all function exit points
                 RTN_InsertCall(rtn, IPOINT_AFTER, (AFUNPTR)function_exit,
-                              IARG_PTR, new std::string(func_name), IARG_END);
+                              IARG_PTR, new std::string(target), IARG_END);
                 
                 RTN_Close(rtn);
+            } else {
+                TraceFile << "*** Function not found: " << target << " ***" << std::endl;
             }
         }
+    }
+    
+    // Also keep the old method for debugging
+    int func_count = 0;
+    for (SEC sec = IMG_SecHead(img); SEC_Valid(sec); sec = SEC_Next(sec)) {
+        for (RTN rtn = SEC_RtnHead(sec); RTN_Valid(rtn); rtn = RTN_Next(rtn)) {
+            std::string func_name = RTN_Name(rtn);
+            func_count++;
+            
+            // For main executable, log the first 10 functions to see what we're getting
+            if (IMG_IsMainExecutable(img) && func_count <= 10) {
+                TraceFile << "Function " << func_count << ": " << func_name << std::endl;
+            }
+            
+            // Log all function names containing "prime" for debugging
+            if (func_name.find("prime") != std::string::npos) {
+                TraceFile << "Found prime function via iteration: " << func_name << std::endl;
+            }
+        }
+    }
+    
+    if (IMG_IsMainExecutable(img)) {
+        TraceFile << "Total functions found via iteration in main executable: " << func_count << std::endl;
     }
 }
 

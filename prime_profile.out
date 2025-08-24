@@ -1,0 +1,23 @@
+Prime Algorithm Performance Profiler
+Target functions: naive_prime, naive_prime_squares, less_naive_prime
+============================================================
+Loading image: /home/espadon/src/PrimeProfiler/build/opt0/main
+*** This is the main executable ***
+*** Function not found: naive_prime ***
+*** Function not found: naive_prime_squares ***
+*** Function not found: less_naive_prime ***
+Function 1: _init
+Function 2: .plt
+Function 3: .text
+Function 4: .fini
+Total functions found via iteration in main executable: 4
+Loading image: /lib64/ld-linux-x86-64.so.2
+Loading image: [vdso]
+Loading image: /lib64/libc.so.6
+
+========== FINAL STATISTICS ==========
+Function            Calls       Instructions   Mem Reads   Mem Writes  Avg Cycles/Call
+--------------------------------------------------------------------------------------
+
+========== CSV DATA ==========
+function,calls,instructions,mem_reads,mem_writes,avg_cycles

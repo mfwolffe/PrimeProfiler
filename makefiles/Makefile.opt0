@@ -4,7 +4,7 @@
 
 
 CC = gcc
-CFLAGS = -Wall -Wextra -O0
+CFLAGS = -Wall -Wextra -O0 -g
 
 SRCS = src/main.c src/naive.c src/less_naive.c
 HDRS = src/primes.h
