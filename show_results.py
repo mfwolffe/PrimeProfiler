@@ -35,11 +35,35 @@ def main():
             functions[func] = []
         functions[func].append(row)
     
-    # Show winners for each algorithm
-    print("Performance Leaders by Algorithm:")
+    # Show algorithm performance hierarchy first
+    print("Algorithm Performance Hierarchy (as expected):")
+    print("-" * 50)
+    
+    # Get best performance for each algorithm to show hierarchy
+    algo_best = {}
+    for func_name in ['less_naive_prime', 'naive_prime_squares', 'naive_prime']:
+        if func_name not in functions:
+            continue
+        func_data = functions[func_name]
+        func_data.sort(key=lambda x: int(x['avg_cycles_per_call']))
+        best_cycles = int(func_data[0]['avg_cycles_per_call'])
+        algo_best[func_name] = best_cycles
+    
+    # Sort algorithms by their best performance
+    sorted_algos = sorted(algo_best.items(), key=lambda x: x[1])
+    for i, (func_name, cycles) in enumerate(sorted_algos):
+        alg_names = {
+            'less_naive_prime': 'less_naive_prime (6k±1 optimization)',
+            'naive_prime_squares': 'naive_prime_squares (√n optimization)', 
+            'naive_prime': 'naive_prime (brute force)'
+        }
+        print(f"  {i+1}. {alg_names[func_name]}: {cycles:,} cycles/call")
+    
+    print()
+    print("Cross-Language Performance Leaders:")
     print("-" * 40)
     
-    for func_name in ['less_naive_prime', 'naive_prime', 'naive_prime_squares']:
+    for func_name in ['less_naive_prime', 'naive_prime_squares', 'naive_prime']:
         if func_name not in functions:
             continue
             
@@ -49,11 +73,11 @@ def main():
         
         cycles = int(winner['avg_cycles_per_call'])
         print(f"{func_name}:")
-        print(f"  Winner: {winner['language']} ({winner['optimization']}) - {cycles:,} cycles/call")
+        print(f"  Best: {winner['language']} ({winner['optimization']}) - {cycles:,} cycles/call")
         
         # Show performance ratios for top 3
         winner_cycles = cycles
-        print("    Performance ratios:")
+        print("    Language comparison:")
         for i, row in enumerate(func_data[:3]):
             ratio = int(row['avg_cycles_per_call']) / winner_cycles
             lang = row['language']
@@ -119,10 +143,18 @@ def main():
         else:
             c_wins += 1
     
-    print("Overall Results:")
-    print("-" * 16)
+    print("Cross-Language Results:")
+    print("-" * 25)
     print(f"Fortran wins: {fortran_wins}/3 algorithms ({fortran_wins/3*100:.0f}%)")
     print(f"C wins:       {c_wins}/3 algorithms ({c_wins/3*100:.0f}%)")
+    print()
+    
+    print("Key Finding:")
+    print("-" * 12)
+    print("Algorithm choice remains paramount - the 6k±1 hand-optimized algorithm")
+    print("outperforms even the best compiler-optimized brute force by ~30x.")
+    print("However, among identical algorithms, compiler choice creates dramatic")
+    print("performance differences (up to 9x between languages).")
     print()
     
     print("For detailed analysis, see: C_vs_Fortran_Performance_Analysis.md")

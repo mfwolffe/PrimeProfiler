@@ -6,7 +6,7 @@
 
 This comprehensive study compares the performance of identical prime number algorithms implemented in C and Fortran across three optimization levels using Intel PIN binary instrumentation. The results reveal dramatic performance differences that highlight the distinct optimization strategies employed by GCC and gfortran compilers.
 
-**Key Finding**: Fortran demonstrates up to **9.08x superior performance** in naive algorithms while C excels in mathematically optimized implementations, demonstrating that compiler optimization strategies can be more impactful than algorithmic improvements.
+**Key Finding**: This study confirms that algorithmic optimizations fundamentally outperform compiler optimizations - hand-optimized algorithms remain 30x faster than compiler-optimized brute force. However, Fortran's gfortran demonstrates dramatically superior optimization of brute force algorithms (9.08x better than GCC), while C excels at optimizing mathematical operations.
 
 **Additional Investigation**: An attempt was made to extend this comparison to include Rust implementations using rustc/LLVM. While the Rust algorithms were successfully implemented and verified for correctness, Intel PIN binary instrumentation proved incompatible with LLVM-optimized binaries due to aggressive function inlining and optimization that obscures function boundaries from runtime analysis tools.
 
@@ -29,13 +29,23 @@ All algorithms were translated identically between languages, ensuring fair comp
 
 ## Performance Results
 
-### Overall Winner by Algorithm (-O3 Optimization)
+### Algorithmic Performance Hierarchy Confirmed
 
-| Algorithm | Winner | Performance Ratio | C Cycles/Call | Fortran Cycles/Call |
-|-----------|--------|-------------------|---------------|---------------------|
-| **less_naive_prime** | **Fortran** | **2.17x faster** | 555,989 | 256,069 |
-| **naive_prime** | **Fortran** | **9.08x faster** | 71,123,758 | 7,835,860 |
-| **naive_prime_squares** | **C** | **2.78x faster** | 415,938 | 1,155,852 |
+As expected, all three algorithms maintain their performance hierarchy across all compiler optimizations:
+
+1. **less_naive_prime (6k±1)**: 256K-657K cycles/call - fastest
+2. **naive_prime_squares (√n)**: 313K-1.4M cycles/call - middle
+3. **naive_prime (brute force)**: 7.8M-71M cycles/call - slowest
+
+**Research Question Answered**: Compiler optimizations cannot overcome algorithmic inefficiency. The 6k±1 hand-optimized algorithm outperforms even the best compiler-optimized brute force by ~30x.
+
+### Cross-Language Performance Comparison (-O3 Optimization)
+
+| Algorithm | C vs Fortran Winner | Performance Ratio | C Cycles/Call | Fortran Cycles/Call |
+|-----------|---------------------|-------------------|---------------|---------------------|
+| less_naive_prime | Fortran | 2.17x faster | 555,989 | 256,069 |
+| naive_prime | Fortran | 9.08x faster | 71,123,758 | 7,835,860 |
+| naive_prime_squares | C | 2.78x faster | 415,938 | 1,155,852 |
 
 ### Complete Performance Matrix
 
@@ -135,16 +145,18 @@ Conversely, C dominates in the square root optimized algorithm:
 
 ## Conclusions
 
-This analysis reveals that **compiler optimization strategy is as important as algorithmic choice**. The same algorithm can perform radically differently depending on the compiler's ability to recognize and optimize specific patterns.
+This analysis confirms the fundamental principle that **algorithmic optimization trumps compiler optimization**. Even the most aggressive compiler optimizations cannot make poor algorithms competitive with well-designed ones.
+
+However, the study reveals important secondary findings about compiler optimization strategies across different languages:
 
 **Key Takeaways:**
 
-1. **Fortran's numerical heritage** shows in its exceptional optimization of traditional mathematical algorithms
-2. **C's systems heritage** provides more predictable, conservative optimization suitable for diverse workloads  
-3. **Algorithm complexity interacts with compiler sophistication** - simpler algorithms benefit more from aggressive optimization
-4. **Performance benchmarking must consider compiler choice** as a primary variable, not just algorithmic implementation
+1. **Algorithmic optimization is paramount**: Hand-optimized 6k±1 algorithm outperforms compiler-optimized brute force by ~30x
+2. **Compiler optimization varies dramatically by language**: Fortran excels at optimizing loops, C excels at mathematical functions
+3. **Original hypothesis confirmed**: No amount of compiler optimization can substitute for good algorithmic design  
+4. **Secondary finding**: Among identical algorithms, compiler choice creates dramatic performance differences (up to 9x)
 
-The 9.08x performance difference in identical algorithms demonstrates that in high-performance computing, **the choice of language and compiler can be more impactful than algorithmic optimizations**.
+While algorithmic choice remains the primary performance factor, the 9.08x performance difference between identical implementations shows that compiler optimization strategies are the critical secondary consideration in high-performance computing.
 
 ## Technical Details
 

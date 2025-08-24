@@ -6,11 +6,16 @@ A comprehensive performance analysis framework comparing identical prime number 
 
 ## Key Findings
 
-### C vs Fortran Performance Results
-- Fortran demonstrates up to 9.08x superior performance in naive algorithms  
-- Fortran achieves 92.3% instruction reduction (16M → 1.2M instructions)
-- C excels in mathematical algorithms by 2.78x in square root optimized implementations
-- Compiler optimization strategies can be more impactful than algorithmic improvements
+### Algorithm Performance Validation
+- Algorithmic optimizations work as expected: 6k±1 pattern > √n optimization > brute force
+- Hand-optimized algorithms consistently outperform brute force, even with aggressive compiler optimizations
+- Original hypothesis confirmed: compiler optimizations cannot overcome poor algorithmic choices
+
+### Cross-Language Compiler Analysis  
+- Fortran's gfortran shows superior optimization of brute force algorithms (9.08x better than C)
+- Fortran achieves 92.3% instruction reduction in naive algorithms (16M → 1.2M instructions)  
+- C's GCC excels at optimizing mathematical functions like sqrt() operations
+- Different compilers have fundamentally different optimization strengths
 
 ## Implemented Languages
 
@@ -23,21 +28,32 @@ A comprehensive performance analysis framework comparing identical prime number 
 
 ## Algorithms Implemented
 
-Three prime checking algorithms of increasing sophistication:
+Three prime checking algorithms of increasing algorithmic sophistication:
 
-1. **`naive_prime`**: Brute force trial division (2 to n-1)
-2. **`naive_prime_squares`**: Optimized trial division (2 to √n)
-3. **`less_naive_prime`**: Advanced 6k±1 pattern optimization
+1. **`naive_prime`**: Pure brute force trial division (2 to n-1) - slowest approach
+2. **`naive_prime_squares`**: Square root optimization (2 to √n) - significantly faster  
+3. **`less_naive_prime`**: 6k±1 pattern optimization - fastest algorithmic approach
+
+**Research Question**: Can aggressive compiler optimizations make brute force competitive with hand-optimized algorithms?
 
 Each algorithm implemented identically across all languages with 27 comprehensive test cases.
 
 ## Performance Results
 
-| Algorithm | Winner | Performance Advantage | Best Configuration |
-|-----------|--------|----------------------|-------------------|
+### Algorithm Performance Hierarchy (as expected)
+1. **`less_naive_prime`** (6k±1): ~250K-650K cycles/call - fastest
+2. **`naive_prime_squares`** (√n): ~300K-1.4M cycles/call - middle  
+3. **`naive_prime`** (brute force): ~7M-71M cycles/call - slowest
+
+### Cross-Language Performance Leaders
+
+| Algorithm | C vs Fortran Winner | Performance Advantage | Best Configuration |
+|-----------|---------------------|----------------------|-------------------|
 | `less_naive_prime` | Fortran | 2.17x faster | Fortran -O3 |
-| `naive_prime` | Fortran | 9.08x faster | Fortran -O3 |
 | `naive_prime_squares` | C | 2.78x faster | C -O0 |
+| `naive_prime` | Fortran | 9.08x faster | Fortran -O3 |
+
+**Key Insight**: While Fortran dramatically optimizes brute force better than C, the 6k±1 hand-optimized algorithm still outperforms even the best compiler-optimized brute force by 30x.
 
 ## Project Structure
 
