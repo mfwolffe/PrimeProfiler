@@ -1,0 +1,19 @@
+Simple Prime Profiler - Instruction Counter
+===========================================
+Main executable: /home/espadon/src/PrimeProfiler/build/opt0/main
+Symbols not found via RTN, trying hardcoded addresses from nm...
+Using hardcoded addresses:
+naive_prime: 0x4014b8 - 0x401500
+less_naive_prime: 0x40154b - 0x4015fc
+naive_prime_squares: 0x401500 - 0x40154b
+
+========== INSTRUCTION COUNTS ==========
+less_naive_prime: 8202 instructions executed
+naive_prime: 15996294 instructions executed
+naive_prime_squares: 23695 instructions executed
+
+========== CSV DATA ==========
+function,instruction_count
+less_naive_prime,8202
+naive_prime,15996294
+naive_prime_squares,23695
