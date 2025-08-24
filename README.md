@@ -1,6 +1,6 @@
 # PrimeProfiler: Cross-Language Prime Algorithm Performance Analysis
 
-**Matt Wolffe, James Madison University, 2025**
+**matt wolffe, 2025**
 
 A comprehensive performance analysis framework comparing identical prime number algorithms across multiple programming languages using Intel PIN binary instrumentation.
 
