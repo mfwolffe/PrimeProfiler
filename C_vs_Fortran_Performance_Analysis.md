@@ -1,6 +1,6 @@
 # C vs Fortran Prime Algorithm Performance Analysis
 
-**Matt Wolffe, James Madison University, 2025**
+**matt wolffe, James Madison University, 2025**
 
 ## Executive Summary
 
